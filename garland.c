@@ -28,32 +28,37 @@
 #define ISC00_BIT	0
 #define ISC01_BIT	1
 #define  INT0_BIT	6
-#define  INT0_PIN	2
+#define  INT0_PIN	2	// on ATmega8535
 
 // SREG bits
 #define I_BIT 7 // enable global interapt
 
 //-----------------------------------------------
 
+void init_registers       (void);
+void init_button          (void);
+void init_timer1          (void);
+void init_extern_interaps (void);
+
 void  first_mode (void);
 void second_mode (void);
 
 // GLOBAL VARS
-char   CUR_FUNC_COUNTER = 0;
-void (*CUR_FUNC) (void) = first_mode;
+char   CUR_MODE_FUNC_COUNTER = 0;
+void (*CUR_MODE_FUNC) (void) = first_mode;
 //------
 
 ISR(INT0_vect)
 {
-	if (CUR_FUNC_COUNTER == 0)
+	if (CUR_MODE_FUNC_COUNTER == 0)
 	{
-		CUR_FUNC = second_mode;
-		CUR_FUNC_COUNTER++;
+		CUR_MODE_FUNC = second_mode;
+		CUR_MODE_FUNC_COUNTER++;
 	}
 	else
 	{
-		CUR_FUNC = first_mode;
-		CUR_FUNC_COUNTER = 0;
+		CUR_MODE_FUNC = first_mode;
+		CUR_MODE_FUNC_COUNTER = 0;
 	}
 	_delay_ms (200);
 }
@@ -62,32 +67,56 @@ ISR(INT0_vect)
 
 int main ()
 {
-	// init regs
-	DDRC  = ALL_INPUT;
-	PORTC = ALL_OUTPUT;
+	init_registers ();
 
-	// enable button
-	DDRD  &= CLEAR_BIT(INT0_PIN);
-	PORTD |=   SET_BIT(INT0_PIN); 
+	init_button ();
 
-	// init timer1
-	TCCR1B = SET_BIT(CS10_BIT) | SET_BIT(CS11_BIT);
-	TCNT1  = 0;	// decimal init
+	init_timer1 ();
 
-	// init extern interaps
-	GICR   = SET_BIT(INT0_BIT);
-	MCUCR  = SET_BIT(ISC00_BIT) | SET_BIT(ISC01_BIT);
-	SREG  |= SET_BIT(I_BIT);
+	init_extern_interaps ();
 
 	while (1)
 	{
-		CUR_FUNC ();
+		CUR_MODE_FUNC ();
 	}
 
 	return 0;
 }
 
 //-----------------------------------------------
+
+void init_registers (void)
+{
+	DDRC  = ALL_INPUT;
+	PORTC = ALL_OUTPUT;
+}
+
+//------
+
+void init_button (void)
+{
+	DDRD  &= CLEAR_BIT(INT0_PIN);
+	PORTD |=   SET_BIT(INT0_PIN);
+}
+
+//------
+
+void init_timer1 (void)
+{
+	TCCR1B = SET_BIT(CS10_BIT) | SET_BIT(CS11_BIT);
+	TCNT1  = 0;	// decimal init
+}
+
+//------
+
+void init_extern_interaps (void)
+{
+	GICR   = SET_BIT(INT0_BIT);
+	MCUCR  = SET_BIT(ISC00_BIT) | SET_BIT(ISC01_BIT);
+	SREG  |= SET_BIT(I_BIT);
+}
+
+//------
 
 void first_mode (void)
 {
