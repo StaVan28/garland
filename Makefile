@@ -11,37 +11,11 @@
 #--------------------------------------------------------------------------------------
 
 #	also install avrdude and objcopy
-#	Ubuntu: sudo apt install -y avrdude objcopy
+#	Ubuntu: sudo apt install -y avrdude avr-objcopy avr-gcc
 
 #--------------------------------------------------------------------------------------
 # SETTINGS
 #--------------------------------------------------------------------------------------
-
-#SRC  = test.c
-#END  = $(SRC:.c=.hex)
-
-#GCC  = avr-gcc # compiler
-#PROG = usbasp  # programmer
-#MICR = m8535   # microcontroller
-
-#all: avrdude_flash
-
-#%.o: %.c
-#	$(GCC) -mmcu=atmega8535 -Os -c $< -o $@
-
-#%.hex: %.o
-#	avr-objcopy -j .text -j .data -O ihex $< $@
-
-#test.hex: test.o
-#test.o:   test.c
-
-#clean:
-#	rm *.hex *.o
-
-#rebuild: clean all
-
-#avrdude_flash: $(END)
-#	avrdude -c $(PROG) -p $(MICR) -P usb -U flash:w:$<
 
 PROJECT = test
 

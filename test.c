@@ -5,11 +5,7 @@
  
 //-----------------------------------------------
 
-// regs init defines
-#define ALL_OUT		0b00000000
-#define ALL_IN		0b11111111
-
-// PORT* init defines
+// regs and PORT* init defines
 #define ALL_OUTPUT		0b00000000
 #define ALL_INPUT		0b11111111
 
@@ -32,6 +28,7 @@
 #define ISC00_BIT	0
 #define ISC01_BIT	1
 #define  INT0_BIT	6
+#define  INT0_PIN	2
 
 // SREG bits
 #define I_BIT 7 // enable global interapt
@@ -66,12 +63,12 @@ ISR(INT0_vect)
 int main ()
 {
 	// init regs
-	DDRC  = ALL_IN;
+	DDRC  = ALL_INPUT;
 	PORTC = ALL_OUTPUT;
 
 	// enable button
-	DDRD  &= CLEAR_BIT(2);
-	PORTD |= SET_BIT(2); 
+	DDRD  &= CLEAR_BIT(INT0_PIN);
+	PORTD |=   SET_BIT(INT0_PIN); 
 
 	// init timer1
 	TCCR1B = SET_BIT(CS10_BIT) | SET_BIT(CS11_BIT);
