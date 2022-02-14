@@ -35,10 +35,10 @@
 
 //-----------------------------------------------
 
-void init_registers       (void);
-void init_button          (void);
-void init_timer1          (void);
-void init_extern_interaps (void);
+void init_registers        (void);
+void init_button           (void);
+void init_timer1           (void);
+void init_extern_interrups (void);
 
 void  first_mode (void);
 void second_mode (void);
@@ -73,7 +73,7 @@ int main ()
 
 	init_timer1 ();
 
-	init_extern_interaps ();
+	init_extern_interrups ();
 
 	while (1)
 	{
@@ -109,7 +109,7 @@ void init_timer1 (void)
 
 //------
 
-void init_extern_interaps (void)
+void init_extern_interrups (void)
 {
 	GICR   = SET_BIT(INT0_BIT);
 	MCUCR  = SET_BIT(ISC00_BIT) | SET_BIT(ISC01_BIT);
